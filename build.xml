@@ -1,0 +1,39 @@
+<project default="BAR">
+
+  <property name="src.home" value="."/>
+
+  <target name="compile">
+     <javac srcdir="${src.home}" debug="true" debuglevel="lines,vars,source">
+     </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+     <delete file="BAR.jar"/>
+     <delete file="MANIFEST.MF"/>
+     <manifest file="MANIFEST.MF">
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Main-Class" value="fj.bwt.Bar"/>
+	<attribute name="Built-Date" value="${TODAY}"/> 
+    </manifest>
+
+   <tstamp>
+     <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+   </tstamp>
+
+    <jar destfile="BAR.jar"
+         basedir="."
+         includes="**/*.class"
+	 manifest="MANIFEST.MF"
+         />
+  </target>
+
+  <target name="cleanup">
+       <delete>
+         <fileset dir="." includes="**/*.class"/>
+         <fileset file="MANIFEST.MF"/>
+       </delete>  
+  </target>
+  
+  <target name="buildBAR" depends="compile,jar,cleanup" />
+</project>
+

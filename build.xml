@@ -1,4 +1,4 @@
-<project default="BAR">
+<project default="barred">
 
   <property name="src.home" value="."/>
 
@@ -8,11 +8,11 @@
   </target>
 
   <target name="jar" depends="compile">
-     <delete file="BAR.jar"/>
+     <delete file="barred.jar"/>
      <delete file="MANIFEST.MF"/>
      <manifest file="MANIFEST.MF">
         <attribute name="Built-By" value="${user.name}"/>
-        <attribute name="Main-Class" value="fj.bwt.Bar"/>
+        <attribute name="Main-Class" value="org.barred.Bar"/>
 	<attribute name="Built-Date" value="${TODAY}"/> 
     </manifest>
 
@@ -20,7 +20,7 @@
      <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
    </tstamp>
 
-    <jar destfile="BAR.jar"
+    <jar destfile="barred.jar"
          basedir="."
          includes="**/*.class"
 	 manifest="MANIFEST.MF"
@@ -34,6 +34,6 @@
        </delete>  
   </target>
   
-  <target name="buildBAR" depends="compile,jar,cleanup" />
+  <target name="barred" depends="compile,jar,cleanup" />
 </project>
 

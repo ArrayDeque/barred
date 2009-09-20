@@ -57,7 +57,7 @@ public class Bar {
     private static void display() {
         System.out.println("\nBARRED 2.0_SVN_Sep20_09");
         System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).\r\n");
-        System.out.println("  Usage: Bar -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
+        System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
         System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
         System.out.println("        -v View the content in the <inputfile> archive.");
         System.out.println("        -c Compress the specified <inputfile> and save as <outputfile>.");
@@ -67,28 +67,25 @@ public class Bar {
         System.out.println("        -i Perform integrity check in DIR specified by <ifile>\n");
         System.out.println("        -b (Advanced) Manually setting the block size (1-30) MB (Default is 2).\n");
         System.out.println("	View Archive: <o-o>");
-        System.out.println("        e-g. Bar -v mp3s.bar\n");
+        System.out.println("        e-g. -v mp3s.bar\n");
         System.out.println("	Check Archive: <*-*>");
-        System.out.println("        e-g. Bar -i mp3s.bar\n");
+        System.out.println("        e-g. -i mp3s.bar\n");
         System.out.println("	Search File: <O-O>");
-        System.out.println("        e-g. Bar -f mp3s.bar bill.mp3\n");
-        System.out.println("	Add Files/Dir to Archive: <++>");
-        System.out.println("        e-g. Bar -a billy.mp3 mp3s.bar");
-        System.out.println("        e-g. Bar -a new_mp3s/ mp3s.bar\n");
+        System.out.println("        e-g. -f mp3s.bar bill.mp3\n");
+        System.out.println("	Add Dir to Archive: <++>");        
+        System.out.println("        e-g. -a new_mp3s/ mp3s.bar\n");
         System.out.println("	Compressing: >101<");
-        System.out.println("        e-g. Bar -c test.mpg test.bar");
-        System.out.println("        e-g. Bar -c -b 3 test.mpg test.bar");
-        System.out.println("        e-g. Bar -c test.mpg test.zip");
-        System.out.println("        e-g. Bar -c /home/afj/mp3s /home/backup/mp3s.bar");
-        System.out.println("        e-g. Bar -cc /home/afj/mp3s /home/backup/mp3s.bar\n");
+        System.out.println("        e-g. -c test.mpg test.bar");
+        System.out.println("        e-g. -c -b 3 test.mpg test.bar");        
+        System.out.println("        e-g. -c /home/afj/mp3s /home/backup/mp3s.bar");
+        System.out.println("        e-g. -cc /home/afj/mp3s /home/backup/mp3s.bar\n");
         System.out.println("	De-compressing: <01010>");
-        System.out.println("        e-g. Bar -x test.bar test.mpg");
-        System.out.println("        e-g. Bar -x test.zip");
-        System.out.println("        e-g. Bar -x /home/backup/mp3s.bar /home/afj/mp3s");
-        System.out.println("        e-g. Bar -xf billy.mp3 mp3s.bar\n");
+        System.out.println("        e-g. -x test.bar test.mpg");
+        System.out.println("        e-g. -x /home/backup/mp3s.bar /home/afj/mp3s");
+        System.out.println("        e-g. -xf billy.mp3 mp3s.bar\n");
         System.out.println("	Securing Content (Optional): {$$$}");
-        System.out.println("        e-g. Bar -c payroll.doc payroll.bar -secure");
-        System.out.println("        e-g. Bar -c /home/afj/personal personal.bar -secure\n");
+        System.out.println("        e-g. -c payroll.doc payroll.bar -secure");
+        System.out.println("        e-g. -c /home/afj/personal personal.bar -secure\n");
         System.exit(0);
     }
 
@@ -365,7 +362,7 @@ public class Bar {
                 FileOutputStream zips = null;
 
                 if (ofile.endsWith("zip")) {
-                    isZip = true;
+                    //isZip = true;
                     zips = new FileOutputStream(ofile);
                 }
 
@@ -432,8 +429,8 @@ public class Bar {
                 ArrayList alist = arts.getAlist();
                 bpsA = new float[alist.size()];
 
-                if (!(ofile).endsWith(".bar") && !(ofile).endsWith(".zip")) {
-                    System.out.println("Output file should have extension .bar/.zip");
+                if (!(ofile).endsWith(".bar")) {
+                    System.out.println("Output file should have extension .bar");
                     System.exit(0);
                 }
 
@@ -909,18 +906,18 @@ public class Bar {
                         test = new File(ofile);
                         test.mkdirs();
                         if (!test.isDirectory()) {
-                            System.out.println("Enter a valid output directory");
+                            System.out.println("\r\nEnter a valid output directory");
                             System.exit(0);
                         }
                     }
                 }
                 if (!isDir) {
                     if (view) {
-                        System.out.println("The Barred file does not have DIR. information. No files to view! (You are trying to view a compressed file.)");
+                        System.out.println("\r\nThe Barred file does not have DIR. information. No files to view! (You are trying to view a compressed file.)");
                         System.exit(0);
                     }
                     if (verify) {
-                        System.out.println("The Barred file does not have DIR. information. No files to check! (You are trying to verify a compressed file.)");
+                        System.out.println("\r\nThe Barred file does not have DIR. information. No files to check! (You are trying to verify a compressed file.)");
                         System.exit(0);
                     }
                 }
@@ -995,11 +992,11 @@ public class Bar {
                         //clean the string before writing
                         String cleaned = StringHelper.cleanString(artifact, fsep, File.separatorChar);
                         if (view) {
-                            System.out.println("    " + cleaned);
+                            System.out.println("\r\n" + cleaned);
                             aIndex++;
                         }
                         if (verify) {
-                            System.out.println("  Checking..." + cleaned + " - ");
+                            System.out.println("\r\nChecking..." + cleaned + " - ");
                             aIndex++;
                         }
                         if (find) {
@@ -1047,13 +1044,13 @@ public class Bar {
                     try {
                         byt = bin.read();
                     } catch (Exception e) {
-                        System.out.println("The Archive is corrupted!");
+                        System.out.println("\r\nThe Archive is corrupted!");
                         System.exit(0);
                     }
 
                     if (verify) {
                         aSize = aSize + byt.length;
-                        System.out.println("   B: " + aSize + " Bytes " + "(" + ByteDisp.convert((long) aSize) + ")");
+                        System.out.println("\r\nB: " + aSize + " Bytes " + "(" + ByteDisp.convert((long) aSize) + ")");
                     }
 
                     //System.out.println("OP from  BIS");
@@ -1062,7 +1059,7 @@ public class Bar {
                             if (eSingleDone) {
                                 fos.write(byt);
                                 fos.close();
-                                System.out.println("Done. " + ofile + " is extracted into BARRED temp. dir. bar_ext.");
+                                System.out.println("\r\nDone. " + ofile + " is extracted into BARRED temp. dir. bar_ext.");
                                 System.exit(0);
                             }
                         } else {
@@ -1076,7 +1073,7 @@ public class Bar {
                     //}
                 }
                 if (view || verify || find) {
-                    System.out.println("Total Files: " + aIndex);
+                    System.out.println("\r\nTotal Files: " + aIndex);
                 }
 
 
@@ -1088,7 +1085,7 @@ public class Bar {
                     System.out.println("\r\nSaved as: " + ofile);
                 }
                 if (eSingle && !eSingleDone) {
-                    System.out.println("The specified file: " + ofile + " is not in the archive " + ifile + ". Please use -v and view the archive content. Note down the prefix/suffix, if any and try again.");
+                    System.out.println("\r\nThe specified file: " + ofile + " is not in the archive " + ifile + ". Please use -v and view the archive content. Note down the prefix/suffix, if any and try again.");
                 }
             }
         } catch (Exception e) {

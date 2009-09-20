@@ -48,21 +48,24 @@ public class Bar {
     private static boolean isComment = false;
     private static boolean eSingle = false;
     private static boolean isBwt = true;
+    private static int blockSize = 1;
+    private static boolean modeLock = false;
 
     /**
      *  Appears on typing Help
      */
     private static void display() {
         System.out.println("\nBARRED 2.0_SVN_Sep20_09");
-        System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).");
-        System.out.println("  Usage: Bar -c/x/v/i/a <inputfile> <outputfile> [-secure]\n");
-        System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>");
-        System.out.println("        -v View the content in the <inputfile> archive");
-        System.out.println("        -c Compress the specified <inputfile> and save as <outputfile>");
+        System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).\r\n");
+        System.out.println("  Usage: Bar -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
+        System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
+        System.out.println("        -v View the content in the <inputfile> archive.");
+        System.out.println("        -c Compress the specified <inputfile> and save as <outputfile>.");
         System.out.println("        -cc Add a comment to the archive and compress it.");
-        System.out.println("        -x Decompress the specified <inputfile> and save as <outputfile>");
+        System.out.println("        -x Decompress the specified <inputfile> and save as <outputfile>.");
         System.out.println("        -xf Decompress the specified file.");
         System.out.println("        -i Perform integrity check in DIR specified by <ifile>\n");
+        System.out.println("        -b (Advanced) Manually setting the block size (1-30) MB (Default is 2).\n");
         System.out.println("	View Archive: <o-o>");
         System.out.println("        e-g. Bar -v mp3s.bar\n");
         System.out.println("	Check Archive: <*-*>");
@@ -74,6 +77,7 @@ public class Bar {
         System.out.println("        e-g. Bar -a new_mp3s/ mp3s.bar\n");
         System.out.println("	Compressing: >101<");
         System.out.println("        e-g. Bar -c test.mpg test.bar");
+        System.out.println("        e-g. Bar -c -b 3 test.mpg test.bar");
         System.out.println("        e-g. Bar -c test.mpg test.zip");
         System.out.println("        e-g. Bar -c /home/afj/mp3s /home/backup/mp3s.bar");
         System.out.println("        e-g. Bar -cc /home/afj/mp3s /home/backup/mp3s.bar\n");
@@ -148,99 +152,201 @@ public class Bar {
             String ofile = new String();
             String pass = new String();
 
+            int arLength = ar.length;
 
             try {
-                if (ar.length != 0) {
+                if (arLength != 0) {
 
                     if (ar[0].indexOf("help") != -1) {
                         display();
                     }
 
-                    if (ar[0].equals("-c")) {
-                        mode = "compress";
-                        ifile = ar[1];
-                        ofile = ar[2];
-                    } else if (ar[0].equals("-x")) {
-
-                        mode = "decompress";
-                        ifile = ar[1];
-
-                        if (!ifile.endsWith("zip")) {
-                            ofile = ar[2];
-                        } else {
-
-                            if (ar.length > 2) {
-                                System.out.println("Cannot specify output file for formats other than bar. Files will be extracted in bar_ext Dir.");
+                    //check for overriding block size
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-b")) {
+                            if (i == arLength) {
+                                display();
                                 System.exit(0);
                             }
 
-                            ofile = "bar_ext";
-                            File ini = new File(ofile);
-                            ini.mkdir();
+                            blockSize = Integer.parseInt(ar[i + 1]);
+
+                            if(blockSize < 1 || blockSize > 30){
+                                System.out.println(" Block size should be between 1-30 MB.");
+                                System.exit(0);
+                            }
+                            else{
+                                System.out.println(" WARNING: Block size specified manually - "+blockSize);
+                            }
+                            break;
                         }
-                    } else if (ar[0].equals("-v")) {
+                    }
 
-                        mode = "view";
-                        ifile = ar[1];
-                        view = true;
+                    //check for compression
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-c")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "compress";
+                            modeLock = true;
+                            ifile = ar[i + 1];
+                            ofile = ar[i + 2];
+                            break;
+                        }
+                    }
 
-                    } else if (ar[0].equals("-i")) {
+                    //check for decompression
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-x")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "decompress";
+                            modeLock = true;
+                            ifile = ar[i + 1];
 
-                        mode = "verify";
-                        ifile = ar[1];
-                        verify = true;
+                            if (!ifile.endsWith("zip")) {
+                                ofile = ar[i + 2];
+                            } else {
 
-                    } else if (ar[0].equals("-f")) {
+                                if (arLength > 2) {
+                                    System.out.println("Cannot specify output file for formats other than bar. Files will be extracted in bar_ext Dir.");
+                                    System.exit(0);
+                                }
 
-                        mode = "find";
-                        ifile = ar[1];
-                        ofile = ar[2];
-                        find = true;
+                                ofile = "bar_ext";
+                                File ini = new File(ofile);
+                                ini.mkdir();
+                            }
+                            break;
+                        }
+                    }
 
-                    } else if (ar[0].equals("-a")) {
+                    //check for view mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-v")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "view";
+                            modeLock = true;
+                            ifile = ar[i + 1];
+                            view = true;
+                            break;
+                        }
+                    }
 
-                        mode = "add";
-                        ifile = ar[1];
-                        ofile = ar[2];
-                        add = true;
+                    //check for verify mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-i")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "verify";
+                            modeLock = true;
+                            ifile = ar[i + 1];
+                            verify = true;
+                            break;
+                        }
+                    }
 
-                    } else if (ar[0].equals("-cc")) {
+                    //check for find mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-f")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "find";
+                            modeLock = true;
+                            ifile = ar[i + 1];
+                            ofile = ar[i + 2];
+                            find = true;
+                            break;
+                        }
+                    }
 
-                        mode = "compress";
-                        isComment = true;
-                        ifile = ar[1];
-                        ofile = ar[2];
+                    //check for add mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-a")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "add";
+                            modeLock = true;
+                            ifile = ar[i + 1];
+                            ofile = ar[i + 2];
+                            add = true;
+                            break;
+                        }
+                    }
 
-                    } else if (ar[0].equals("-xf")) {
+                    //check for compress with comment mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-cc")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "compress";
+                            modeLock = true;
+                            isComment = true;
+                            ifile = ar[i + 1];
+                            ofile = ar[i + 2];
+                            break;
+                        }
+                    }
 
-                        mode = "decompress";
-                        eSingle = true;
-                        ifile = ar[2];
-                        ofile = ar[1];
+                    //check for file decompress mode
+                    for (int i = 0; i < arLength; i++) {
+                        if (ar[i].equalsIgnoreCase("-xf")) {
+                            if (i == arLength) {
+                                display();
+                                System.exit(0);
+                            }
+                            mode = "decompress";
+                            modeLock = true;
+                            eSingle = true;
+                            ifile = ar[i + 2];
+                            ofile = ar[i + 1];
+                            break;
+                        }
+                    }
 
-                    } else {
-
+                    if (!modeLock) {
                         display();
                         System.exit(0);
-
                     }
+
+
                 } else {
                     display();
+                    System.exit(0);
                 }
 
-                if (ar.length == 4) {
-
-                    if (ar[3].equals("-secure")) {
-
+                //check for secure mode
+                for (int i = 0; i < arLength; i++) {
+                    if (ar[i].equalsIgnoreCase("-secure")) {
+                        if (i == arLength) {
+                            display();
+                            System.exit(0);
+                        }
                         if (mode.equals("decompress") || mode.equals("view") || mode.equals("verify")) {
                             System.out.println(" -secure option should be used for compression only.");
                             System.exit(0);
                         }
                         //System.out.println("Protecting...");
                         protectA = true;
+                        break;
                     }
-
                 }
+ 
             } catch (Exception e) {
                 System.out.println(e);
                 display();
@@ -251,6 +357,8 @@ public class Bar {
             if (mode.equals("compress") || mode.equals("add")) {
                 boolean isDir = false;
                 /* Handle file types here */
+
+                System.out.println(" Block Size: "+blockSize+" MB");
 
                 boolean isZip = false;
                 boolean isGZip = false;
@@ -438,8 +546,8 @@ public class Bar {
                 boolean initOut = false;
 
                 long startTime = System.currentTimeMillis();
-                System.out.println("MEM:"+(Runtime.getRuntime().maxMemory())/1024000);
-                
+                //System.out.println("MEM:" + (Runtime.getRuntime().maxMemory()) / 1024000);
+
 
                 for (int i = 0; i < alist.size(); i++) {
 
@@ -506,7 +614,11 @@ public class Bar {
 
 
 
-                        int bsize = BlockMan.getBlock(size);
+                        int bsize = (BlockMan.getBlock(size)) * blockSize;
+
+                        //long dbs = (bsize / (1024 * 1000));
+
+                        //System.out.println(" Block size: " + dbs + " MB");
 
                         //if(bsize==size && !isDir){
                         //mBlock=false;
@@ -520,7 +632,7 @@ public class Bar {
 
                         //System.out.println("Size:"+size+" bsize:"+bsize+" for "+alist.get(i));
 
-                        int parts = (size / bsize) + 1;
+                        long parts = (size / bsize) + 1;
                         if (size == bsize) {
                             parts = 1;
                         }
@@ -557,7 +669,7 @@ public class Bar {
 
                         asize = 1;
 
-                        System.out.println(" Reading " + alist.get(i)+" as "+parts+" block(s).");
+                        System.out.println(" Reading " + alist.get(i) + " as " + parts + " block(s).");
 
                         while (true) {
                             if (end > size && start < size) {
@@ -629,9 +741,9 @@ public class Bar {
 
                 long endTime = System.currentTimeMillis();
 
-                long duration = (endTime - startTime)/1000;
+                long duration = (endTime - startTime) / 1000;
 
-                System.out.println (" Processed in "+duration+" secs.");
+                System.out.println(" Processed in " + duration + " secs.");
 
                 if (!add) {
                     System.out.println("File saved as : " + ofile);
@@ -676,7 +788,7 @@ public class Bar {
 
                     } else if (mode.equals("view")) {
                         System.out.println("Reading ZIP Stream: " + ifile + "");
-                        
+
                         File ou = new File(System.getProperty("user.dir"), ofile);
                         ou.mkdir();
                         ZipHandler.viewArc(ifile);
@@ -839,6 +951,8 @@ public class Bar {
                 boolean aSizeFirst = true;
                 boolean eSingleDone = false;
 
+                System.out.print("Wait");
+
                 while (fin.available() != 0) {
                     if (!view && !verify) {
                         System.out.print(".");
@@ -971,7 +1085,7 @@ public class Bar {
                     fos.close();
                 }
                 if (!view && !verify && !eSingle && !find) {
-                    System.out.println("File saved as: " + ofile);
+                    System.out.println("\r\nSaved as: " + ofile);
                 }
                 if (eSingle && !eSingleDone) {
                     System.out.println("The specified file: " + ofile + " is not in the archive " + ifile + ". Please use -v and view the archive content. Note down the prefix/suffix, if any and try again.");

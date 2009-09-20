@@ -21,7 +21,7 @@ package org.barred.block;
 public class BlockMan {
 
     //The default block size
-    private final static int _block_size = 1024*20000;
+    private final static int _block_size = 1024*1000;
 
     /**
      *  Gets the block attribute of the BlockMan class

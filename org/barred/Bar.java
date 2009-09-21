@@ -168,9 +168,9 @@ public class Bar {
 
                             blockSize = Integer.parseInt(ar[i + 1]);
 
-                            else{
-                                System.out.println(" WARNING: Block size specified manually - "+blockSize);
-                            }
+                            
+                            System.out.println(" WARNING: Block size specified manually - "+blockSize);
+                           
                             break;
                         }
                     }

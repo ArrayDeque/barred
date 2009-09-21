@@ -126,14 +126,14 @@ public class BARInputStream {
         //System.out.print("[DONE]\n");
 
         //System.out.print("Performing RLE .....");
-        //a1 = new byte[a2.length];
-        //a2 = RLE.decode(a1);
+        a1 = new byte[a2.length];
+        a1 = RLE.decode(a2);
         //System.out.print("[DONE]\n");
 
         //System.out.print("Writing file .......");
         //outputStream.write(a2);
         //System.out.print("[DONE]\n");
-        return a2;
+        return a1;
     }
 
     /**

@@ -51,19 +51,19 @@ public class BAROutputStream {
      */
     public BWTHelper write(byte[] a1) throws Exception {
 
-        byte[] a2 = null;
+        
+	//STAGE1: PERFORMING RLE
+	byte[] a2 = new byte[a1.length];
+	a2 = RLE.encode(a1);
+	//a2 has the target array
 
-        //System.out.print("Performing RLE .....");
-        //a2 = RLE.encode(a1);
-        //System.out.print("[DONE]\n");
-
-        //System.out.print("Performing BWT .....");
-        a2 = new byte[a1.length];
-        BWTHelper bwth = BWT.encode(a1, a2);
+        //STAGE2: PERFORMING BWT
+        a1 = new byte[a2.length];
+        BWTHelper bwth = BWT.encode(a2, a1);
         int index = bwth.getPindex();
         boolean suc = bwth.getSuccess();
-        //a1 is the input array.
-        //a2 has the bwt array.
+        //a1 has the target array.
+
 
         BWTHelper status = new BWTHelper();
 
@@ -76,18 +76,13 @@ public class BAROutputStream {
             status.setIsBWT(true);
         }
 
-        //System.out.print("[DONE]\n");
+	//STAGE3: PERFORMING MTF
+        MTF.encode(a1, a2);
+        //a2 has the target array.
 
-        //System.out.print("Performing MTF .....");
-        MTF.encode(a2, a1);
-        //System.out.print("[DONE]\n");
-        //a1 is the MTF Array
-        //a2 has the bwt array.
-
-        //System.out.print("Performing RLE .....");
-        a2 = RLE.encode(a1);
-        //System.out.print("[DONE]\n");
-        //a2 has the RLE array.
+        //STAGE4: PERFORMING RLE
+        a1 = RLE.encode(a2);
+	//a1 has the target array.
 
         ByteBuffer buf = ByteBuffer.allocate(4);
         buf.putInt(index);
@@ -95,16 +90,14 @@ public class BAROutputStream {
         //Writing the Primary Index as is
         out.write(buf.array());
 
-        //System.out.print("Performing ENT .....");
+        //STAGE5: PERFORMING ENT
 
-        int len = (3 * a2.length);
+        int len = (3 * a1.length);
         ByteBuffer tout = ByteBuffer.allocate((len));
-        //System.out.println("a2length:"+len);
-
-        BBHelper fin = new ENT().encode(a2, tout);
+        
+        BBHelper fin = new ENT().encode(a1, tout);
         int size = len - (fin.getRemaining());
-        //System.out.println("Chunk Size: "+size);
-
+        
 
         byte fArray[] = fin.getBuffer().array();
 

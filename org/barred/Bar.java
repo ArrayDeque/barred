@@ -48,14 +48,14 @@ public class Bar {
     private static boolean isComment = false;
     private static boolean eSingle = false;
     private static boolean isBwt = true;
-    private static int blockSize = 1;
+    private static int blockSize = 10;
     private static boolean modeLock = false;
 
     /**
      *  Appears on typing Help
      */
     private static void display() {
-        System.out.println("\nBARRED 2.0_SVN_Sep20_09");
+        System.out.println("\nBARRED 2.0_SVN_Sep21_09");
         System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).\r\n");
         System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
         System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
@@ -65,7 +65,7 @@ public class Bar {
         System.out.println("        -x Decompress the specified <inputfile> and save as <outputfile>.");
         System.out.println("        -xf Decompress the specified file.");
         System.out.println("        -i Perform integrity check in DIR specified by <ifile>\n");
-        System.out.println("        -b (Advanced) Manually setting the block size (1-30) MB (Default is 2).\n");
+        System.out.println("        -b (Advanced) Manually setting the block size (1-n) MB (Default is 10).\n");
         System.out.println("	View Archive: <o-o>");
         System.out.println("        e-g. -v mp3s.bar\n");
         System.out.println("	Check Archive: <*-*>");
@@ -168,10 +168,6 @@ public class Bar {
 
                             blockSize = Integer.parseInt(ar[i + 1]);
 
-                            if(blockSize < 1 || blockSize > 30){
-                                System.out.println(" Block size should be between 1-30 MB.");
-                                System.exit(0);
-                            }
                             else{
                                 System.out.println(" WARNING: Block size specified manually - "+blockSize);
                             }

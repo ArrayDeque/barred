@@ -48,14 +48,14 @@ public class Bar {
     private static boolean isComment = false;
     private static boolean eSingle = false;
     private static boolean isBwt = true;
-    private static int blockSize = 10;
+    private static int blockSize = 1;
     private static boolean modeLock = false;
 
     /**
      *  Appears on typing Help
      */
     private static void display() {
-        System.out.println("\nBARRED 2.0_SVN_Sep21_09");
+        System.out.println("\nBARRED 2.0_SVN_Sep23_09");
         System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).\r\n");
         System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
         System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
@@ -1040,6 +1040,7 @@ public class Bar {
                     try {
                         byt = bin.read();
                     } catch (Exception e) {
+                        e.printStackTrace();
                         System.out.println("\r\nThe Archive is corrupted!");
                         System.exit(0);
                     }

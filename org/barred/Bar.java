@@ -55,8 +55,8 @@ public class Bar {
      *  Appears on typing Help
      */
     private static void display() {
-        System.out.println("\nBARRED 2.0_SVN_Sep23_09");
-        System.out.println("  Copyright (C) 2009 by Frank Jennings (fermatjen@yahoo.com).\r\n");
+        System.out.println("\nBARRED 2.1");
+        System.out.println("  Copyright (C) 2013 Frank Jennings (fermatjen@yahoo.com).\r\n");
         System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
         System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
         System.out.println("        -v View the content in the <inputfile> archive.");

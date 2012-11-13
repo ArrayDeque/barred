@@ -55,37 +55,39 @@ public class Bar {
      *  Appears on typing Help
      */
     private static void display() {
-        System.out.println("\nBARRED 2.1");
-        System.out.println("  Copyright (C) 2013 Frank Jennings (fermatjen@yahoo.com).\r\n");
-        System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].\n");
-        System.out.println("        -a Add Files/DIR specified by <inputfile> to <outputfile>.");
-        System.out.println("        -v View the content in the <inputfile> archive.");
-        System.out.println("        -c Compress the specified <inputfile> and save as <outputfile>.");
+        System.out.println("BARRED 2.1");
+        System.out.println("Copyright (C) 2013 Frank Jennings (fermatjen@yahoo.com).\r\n");
+        System.out.println("  Usage: -c/x/v/i/a <inputfile> <outputfile> [-secure].");
+        System.out.println("        -a  Add Files/DIR specified by <inputfile> to <outputfile>.");
+        System.out.println("        -v  View the content in the <inputfile> archive.");
+        System.out.println("        -c  Compress the specified <inputfile> and save as <outputfile>.");
         System.out.println("        -cc Add a comment to the archive and compress it.");
-        System.out.println("        -x Decompress the specified <inputfile> and save as <outputfile>.");
+        System.out.println("        -x  Decompress the specified <inputfile> and save as <outputfile>.");
         System.out.println("        -xf Decompress the specified file.");
-        System.out.println("        -i Perform integrity check in DIR specified by <ifile>\n");
-        System.out.println("        -b (Advanced) Manually setting the block size (1-n) MB (Default is 10).\n");
-        System.out.println("	View Archive: <o-o>");
-        System.out.println("        e-g. -v mp3s.bar\n");
-        System.out.println("	Check Archive: <*-*>");
-        System.out.println("        e-g. -i mp3s.bar\n");
-        System.out.println("	Search File: <O-O>");
-        System.out.println("        e-g. -f mp3s.bar bill.mp3\n");
-        System.out.println("	Add Dir to Archive: <++>");        
-        System.out.println("        e-g. -a new_mp3s/ mp3s.bar\n");
-        System.out.println("	Compressing: >101<");
-        System.out.println("        e-g. -c test.mpg test.bar");
-        System.out.println("        e-g. -c -b 3 test.mpg test.bar");        
-        System.out.println("        e-g. -c /home/afj/mp3s /home/backup/mp3s.bar");
-        System.out.println("        e-g. -cc /home/afj/mp3s /home/backup/mp3s.bar\n");
-        System.out.println("	De-compressing: <01010>");
-        System.out.println("        e-g. -x test.bar test.mpg");
-        System.out.println("        e-g. -x /home/backup/mp3s.bar /home/afj/mp3s");
-        System.out.println("        e-g. -xf billy.mp3 mp3s.bar\n");
-        System.out.println("	Securing Content (Optional): {$$$}");
-        System.out.println("        e-g. -c payroll.doc payroll.bar -secure");
-        System.out.println("        e-g. -c /home/afj/personal personal.bar -secure\n");
+        System.out.println("        -i  Perform integrity check in DIR specified by <ifile>\n");
+        System.out.println("        -b  (Advanced) Manually setting the block size (1-n) MB (Default is 10).\r\n");
+        System.out.println("  Check out the following examples:\r\n");
+        System.out.println("	Create an Archive:");
+        System.out.println("        $ java -jar barred.jar -c test.mpg test.bar");
+        System.out.println("        $ java -jar barred.jar -c -b 3 test.mpg test.bar");        
+        System.out.println("        $ java -jar barred.jar -c /home/afj/mp3s /home/backup/mp3s.bar");
+        System.out.println("        $ java -jar barred.jar -cc /home/afj/mp3s /home/backup/mp3s.bar\r\n");
+        System.out.println("	Extract an Archive:");
+        System.out.println("        $ java -jar barred.jar -x test.bar test.mpg");
+        System.out.println("        $ java -jar barred.jar -x /home/backup/mp3s.bar /home/afj/mp3s");
+        System.out.println("        $ java -jar barred.jar -xf billy.mp3 mp3s.bar\r\n");
+        System.out.println("	Securing an Archive:");
+        System.out.println("        $ java -jar barred.jar -c payroll.doc payroll.bar -secure");
+        System.out.println("        $ java -jar barred.jar -c /home/afj/personal personal.bar -secure\r\n");
+        System.out.println("	View Archive:");
+        System.out.println("        $ java -jar barred.jar -v mp3s.bar\r\n");
+        System.out.println("	Check Archive:");
+        System.out.println("        $ java -jar barred.jar -i mp3s.bar\r\n");
+        System.out.println("	Search in Archive:");
+        System.out.println("        $ java -jar barred.jar -f mp3s.bar bill.mp3\r\n");
+        System.out.println("	Add a Directory to Archive:");        
+        System.out.println("        $ java -jar barred.jar -a new_mp3s/ mp3s.bar\r\n");
+        
         System.exit(0);
     }
 

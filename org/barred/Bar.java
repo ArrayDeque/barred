@@ -1,4 +1,5 @@
-/******************************************************************************
+/**
+ * ****************************************************************************
  *
  *
  * Barred File Archiver.
@@ -11,9 +12,8 @@
  * for any purpose. It is provided "as is" without express or implied warranty.
  * See the GNU General Public License for more details.
  *
- *  
- * @author     Frank Jennings fermatjen@yahoo.com
- * @created    September 20, 2009
+ *
+ * @author Frank Jennings fermatjen@yahoo.com @created September 20, 2009
  */
 package org.barred;
 
@@ -50,9 +50,10 @@ public class Bar {
     private static boolean isBwt = true;
     private static int blockSize = 1;
     private static boolean modeLock = false;
+    private static int allowedBlockSize = 50;
 
     /**
-     *  Appears on typing Help
+     * Appears on typing Help
      */
     private static void display() {
         System.out.println("BARRED 2.1");
@@ -69,7 +70,7 @@ public class Bar {
         System.out.println("  Check out the following examples:\r\n");
         System.out.println("	Create an Archive:");
         System.out.println("        $ java -jar barred.jar -c test.mpg test.bar");
-        System.out.println("        $ java -jar barred.jar -c -b 3 test.mpg test.bar");        
+        System.out.println("        $ java -jar barred.jar -c -b 3 test.mpg test.bar");
         System.out.println("        $ java -jar barred.jar -c /home/afj/mp3s /home/backup/mp3s.bar");
         System.out.println("        $ java -jar barred.jar -cc /home/afj/mp3s /home/backup/mp3s.bar\r\n");
         System.out.println("	Extract an Archive:");
@@ -85,18 +86,18 @@ public class Bar {
         System.out.println("        $ java -jar barred.jar -i mp3s.bar\r\n");
         System.out.println("	Search in Archive:");
         System.out.println("        $ java -jar barred.jar -f mp3s.bar bill.mp3\r\n");
-        System.out.println("	Add a Directory to Archive:");        
+        System.out.println("	Add a Directory to Archive:");
         System.out.println("        $ java -jar barred.jar -a new_mp3s/ mp3s.bar\r\n");
-        
+
         System.exit(0);
     }
 
     /**
-     *  Prints stats after compression routine
+     * Prints stats after compression routine
      *
-     *@param  orig  Description of the Parameter
-     *@param  comp  Description of the Parameter
-     *@return       Description of the Return Value
+     * @param orig Description of the Parameter
+     * @param comp Description of the Parameter
+     * @return Description of the Return Value
      */
     private static void stats(float orig, float comp, boolean file) {
 
@@ -139,10 +140,10 @@ public class Bar {
     }
 
     /**
-     *  Program Start
+     * Program Start
      *
-     *@param  ar             Description of the Parameter
-     *@exception  Exception  Description of the Exception
+     * @param ar Description of the Parameter
+     * @exception Exception Description of the Exception
      */
     public static void main(String ar[]) throws Exception {
         try {
@@ -169,10 +170,14 @@ public class Bar {
                             }
 
                             blockSize = Integer.parseInt(ar[i + 1]);
+                            if(blockSize > allowedBlockSize){
+                                System.out.println("The allowed block size is "+allowedBlockSize);
+                                System.exit(0);
+                            }
 
-                            
-                            System.out.println(" WARNING: Block size specified manually - "+blockSize);
-                           
+
+                            System.out.println(" WARNING: Block size specified manually - " + blockSize);
+
                             break;
                         }
                     }
@@ -341,7 +346,7 @@ public class Bar {
                         break;
                     }
                 }
- 
+
             } catch (Exception e) {
                 System.out.println(e);
                 display();
@@ -351,9 +356,11 @@ public class Bar {
 
             if (mode.equals("compress") || mode.equals("add")) {
                 boolean isDir = false;
-                /* Handle file types here */
+                /*
+                 * Handle file types here
+                 */
 
-                System.out.println(" Block Size: "+blockSize+" MB");
+                System.out.println(" Block Size: " + blockSize + " MB");
 
                 boolean isZip = false;
                 boolean isGZip = false;
@@ -690,19 +697,29 @@ public class Bar {
                             //if(! isDir){
                             System.out.print("[" + part + "/" + parts + "]");
                             //}
-                            byte[] input = new byte[fsize];
-                            in.read(input);
-                            BWTHelper bwt = bos.write(input);
-                            int _bsize = bwt.getBytesOut();
-                            isBWT = bwt.getIsBWT();
-                            isBwt = isBWT;
-                            //PI + Chunk Size
-                            asize = asize + 8;
+                            //Check for Outofmemory error
+                            byte[] input = null;
+                            try {
+                                input = new byte[fsize];
 
-                            asize = asize + _bsize;
-                            start = end + 1;
-                            end = end + bsize;
-                            isFirst = false;
+                                in.read(input);
+                                BWTHelper bwt = bos.write(input);
+                                int _bsize = bwt.getBytesOut();
+                                isBWT = bwt.getIsBWT();
+                                isBwt = isBWT;
+                                //PI + Chunk Size
+                                asize = asize + 8;
+
+                                asize = asize + _bsize;
+                                start = end + 1;
+                                end = end + bsize;
+                                isFirst = false;
+                            } catch (OutOfMemoryError ex) {
+                                //ex.printStackTrace();
+                                System.out.println("\r\nBlock size too high!\r\nUse -Xmx2048m with the command as the block size is too high. Example:");
+                                System.out.println("        $ java -Xmx2048m -jar barred.jar -c test.mpg test.bar");
+                                System.exit(0);
+                            }
                         }
                         System.out.println();
 
@@ -769,7 +786,7 @@ public class Bar {
 
 
                 /*
-                 *  -----------------------Decompressing------------------------
+                 * -----------------------Decompressing------------------------
                  */
 
                 if (ifile.endsWith("zip")) {

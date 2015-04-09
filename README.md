@@ -137,4 +137,4 @@ java -Xms512m -Xmx1024m -jar barred.jar -c <input_file> Ouput.bar -b 20
 
 **Note** Higher the block size slower the tool becomes but better is the compression. But duh you don't have a super computer!
 
-For comments, queries, bugs, contact me at fermatjen AT yahoo DOT com
+For comments, queries, bugs, contact me at frank.jennings AT gmail DOT com
